@@ -2,7 +2,7 @@
 
 題目來源：[NTPU dsp2026 HW1](https://github.com/cychiang-ntpu/dsp2026/tree/master/assignments/hw1_rc_lowpass)。本頁依序記錄 A1–A3、B1–B7 的 LaTeX 推導、C 程式、產生的 WAV 與實際量測圖。截止時間依老師題目為 **2026-10-08 18:00**。
 
-> **繳交前待補：** 老師要求 A1–A3、B1–B6 的本人手寫推導掃描。以下公式可作為親手書寫與檢查的依據；收到本人手寫照片後，放入 `figure/handwritten/` 並在這裡嵌入。A3 已附 GeoGebra 匯出圖片，但公開分享連結仍待 GeoGebra 登入並儲存後補上。
+> **繳交前待補：** 老師要求 A1–A3、B1–B6 的本人手寫推導掃描。以下公式可作為親手書寫與檢查的依據；收到本人手寫照片後，放入 `figure/handwritten/` 並在這裡嵌入。A3 已附 GeoGebra 匯出圖片與互動作品連結。
 
 ## 檔案與如何重現
 
@@ -72,6 +72,8 @@ $$\begin{aligned}
 ### A3　GeoGebra
 
 在 [GeoGebra 繪圖計算機](https://www.geogebra.org/calculator) 輸入 `f(x)=sqrt(3)*cos(x-pi/3)`、`g(x)=3*sin(x+2*pi/3)`、`h(x)=f(x)+g(x)`。下圖為直接從 GeoGebra 匯出的曲線；綠色 $f$、藍色 $g$、紅色 $h$。紅色曲線在 $x=0$ 的值為 $2\sqrt3\approx3.464$，驗證 A1–A2。
+
+[開啟 GeoGebra 互動作品](https://www.geogebra.org/m/vxzrymyc)。互動作品與下方圖片的曲線配色可能不同，三條函數相同。
 
 ![GeoGebra A3 曲線](figure/A3_geogebra.png)
 
@@ -167,5 +169,5 @@ $f_s=4000$ 時奈奎斯特頻率只有 2000 Hz，3000 Hz 取樣後等價於 **�
 - [x] A3 GeoGebra 匯出圖片
 - [x] `sine_wav_gen.c`、`RC_filtering.c`、WAV 與濾波比較圖
 - [ ] 本人手寫推導照片／掃描，放入 `figure/handwritten/` 並嵌入本頁
-- [ ] GeoGebra 登入後的作品分享連結
+- [x] GeoGebra 作品分享連結
 - [ ] 邀請老師加入私人 repository；在 LMS 填 repository URL 與完整 commit SHA
