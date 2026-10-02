@@ -8,7 +8,7 @@
 
 | 檔案 | 用途 |
 |---|---|
-| `sine_wav_gen.c` | 產生左聲道 sine、右聲道 cosine 的 16-bit PCM WAV。右聲道是複數訊號的實部，左聲道是虛部。振幅設為 0.8，以避免量化溢位。 |
+| `sine_wav_gen.c` | 產生左聲道 sine、右聲道 cosine 的 16-bit PCM WAV。右聲道是複數訊號的實部，左聲道是虛部，兩者組成振幅 0.8 的複數弦波。 |
 | `RC_filtering.c` | 從 WAV 標頭讀取取樣率，以 400 Hz 截止頻率對每個聲道獨立套用式 (8)，初始值為 $y[-1]=0$。支援單／雙聲道 PCM16。 |
 | `analyze.py` | 只用 Python 標準函式庫讀取 WAV、估計複數振幅比與相位，繪製 SVG 圖。 |
 | `audio_examples/` | 100、400、3000 Hz 在 8000 Hz 取樣率下，濾波前後各一個 WAV。 |
@@ -24,7 +24,7 @@ gcc -std=c11 -O2 -Wall -Wextra RC_filtering.c -o RC_filtering -lm
 python analyze.py audio_examples figure
 ```
 
-程式拒絕 $f\ge f_s/2$ 的產生要求，避免把超過奈奎斯特頻率的類比弦波誤當成原頻率；B5–B6 仍以數學方式分析 $f_s=4000$、$f=3000$ 的混疊情況。WAV 使用小端序 RIFF 標頭與交錯雙聲道樣本；濾波器保留取樣率、聲道數與樣本總數，輸出標準 PCM16 WAV。
+程式拒絕 $f\ge f_s/2$ 的產生要求，避免把超過奈奎斯特頻率的類比弦波誤當成原頻率；B5–B6 仍以數學方式分析 $f_s=4000$、 $f=3000$ 的混疊情況。WAV 使用小端序 RIFF 標頭與交錯雙聲道樣本；濾波器保留取樣率、聲道數與樣本總數，輸出標準 PCM16 WAV。
 
 ## Part A：相子暖身
 
@@ -33,29 +33,30 @@ python analyze.py audio_examples figure
 $$X(t)=\sqrt3\cos(\theta-\pi/3),\qquad
 Y(t)=3\sin(\theta+2\pi/3).$$
 
-### A1　三角恆等式
+### A1　和差化積
 
-先用和差角展開（亦可由和差化積得到相同係數）：
+依題目指定的方法，先把兩項都寫成餘弦。令 $a=\theta-\pi/3$、 $b=\theta+\pi/6$；因為 $\sin(\theta+2\pi/3)=\cos b$，所以 $X=\sqrt3\cos a$、 $Y=3\cos b$。利用
 
 $$\begin{aligned}
-X(t)&=\sqrt3\left(\cos\theta\cos\frac\pi3+\sin\theta\sin\frac\pi3\right)
-=\frac{\sqrt3}{2}\cos\theta+\frac32\sin\theta,\\
-Y(t)&=3\left(\sin\theta\cos\frac{2\pi}3+\cos\theta\sin\frac{2\pi}3\right)
-=\frac{3\sqrt3}{2}\cos\theta-\frac32\sin\theta,\\
-Z(t)&=X(t)+Y(t)=\boxed{2\sqrt3\cos\theta}.
+\cos a+\cos b&=2\cos\frac{a+b}{2}\cos\frac{a-b}{2}
+=\sqrt2\cos(\theta-\pi/12),\\
+\cos a-\cos b&=-2\sin\frac{a+b}{2}\sin\frac{a-b}{2}
+=\sqrt2\sin(\theta-\pi/12),
 \end{aligned}$$
 
-兩個 $\sin\theta$ 項抵銷；$Z$ 的振幅是 $2\sqrt3$、相位是 0。
-
-若直接使用**和差化積**，令 $a=\theta-\pi/3$、$b=\theta+\pi/6$，先將 $Y=3\cos b$，則
+再用 $(\sqrt3+3)/\sqrt2=2\sqrt3\cos(\pi/12)$、 $(\sqrt3-3)/\sqrt2=-2\sqrt3\sin(\pi/12)$，得到
 
 $$\begin{aligned}
 Z&=\frac{\sqrt3+3}{2}(\cos a+\cos b)
  +\frac{\sqrt3-3}{2}(\cos a-\cos b)\\
 &=\frac{\sqrt3+3}{\sqrt2}\cos(\theta-\pi/12)
  +\frac{\sqrt3-3}{\sqrt2}\sin(\theta-\pi/12)
- =2\sqrt3\cos\theta.
+ =2\sqrt3\left[\cos\frac\pi{12}\cos(\theta-\pi/12)
+ -\sin\frac\pi{12}\sin(\theta-\pi/12)\right]
+ =\boxed{2\sqrt3\cos\theta}.
 \end{aligned}$$
+
+故振幅為 $2\sqrt3$，相位為 0。也可用和差角展開核對： $X=(\sqrt3/2)\cos\theta+(3/2)\sin\theta$、 $Y=(3\sqrt3/2)\cos\theta-(3/2)\sin\theta$，兩個正弦項相消。
 
 ### A2　相子
 
@@ -160,6 +161,8 @@ $f_s=4000$ 時奈奎斯特頻率只有 2000 Hz，3000 Hz 取樣後等價於 **�
 | 3000 | 0.146711 | −19.282° | 0.146709 | −19.282° |
 
 微小誤差來自 16-bit PCM 的整數量化。波形圖中的藍線是輸入，紅線是濾波後；3000 Hz 僅有約 0.147 倍的輸出振幅。
+
+與 B4 的連續 RC 結果相比，100、400、3000 Hz 的振幅比分別為 0.970143、0.707107、0.132164；實測數位濾波器則為 0.961323、0.658896、0.146711。兩者同樣呈現「頻率越高，衰減越大」的低通趨勢，但數值不完全相同，原因是式 (8) 採用後向差分近似連續 RC。在 8000 Hz 取樣率下，3000 Hz 的相位差尤其明顯：連續值為 −82.405°，數位實測為 −19.282°。因此 B7 的精確驗證應對照 B5 離散公式，並將 B4 作為連續時間的比較基準。
 
 ![濾波前後比較](figure/filter_comparison.svg)
 
