@@ -34,13 +34,16 @@ int main(int argc, char **argv) {
     if (argc != 5 || !number(argv[1], &fs_arg) ||
         !number(argv[2], &freq) || !number(argv[3], &seconds) ||
         fs_arg < 2 || fs_arg > 192000 || floor(fs_arg) != fs_arg ||
-        freq < 0 || freq >= fs_arg / 2 || seconds <= 0 ||
+        freq < 0 || seconds <= 0 ||
         seconds * fs_arg > (UINT32_MAX - 36.0) / 4.0) {
         fprintf(stderr, "usage: %s fs f L out.wav\n"
-                        "fs: integer 2..192000; 0 <= f < fs/2; L > 0\n", argv[0]);
+                        "fs: integer 2..192000; f >= 0; L > 0\n", argv[0]);
         return 1;
     }
     uint32_t fs = (uint32_t)fs_arg;
+    /* Integer-time samples are unchanged when f is reduced modulo fs.
+       Frequencies above fs/2 are allowed so their aliasing can be studied. */
+    double sampled_freq = fmod(freq, fs_arg);
     uint32_t frames = (uint32_t)llround(seconds * fs);
     if (!frames || frames > (UINT32_MAX - 36U) / 4U) {
         fprintf(stderr, "length is outside the WAV size limit\n"); return 1;
@@ -49,7 +52,7 @@ int main(int argc, char **argv) {
     if (!out) { perror(argv[4]); return 1; }
     if (!header(out, fs, frames)) { perror("WAV header"); fclose(out); return 1; }
     for (uint32_t n = 0; n < frames; ++n) {
-        double phase = 2 * PI * freq * n / fs;
+        double phase = 2 * PI * sampled_freq * n / fs;
         int16_t left = (int16_t)lrint(32767.0 * 0.8 * sin(phase));
         int16_t right = (int16_t)lrint(32767.0 * 0.8 * cos(phase));
         if (!u16(out, (uint16_t)left) || !u16(out, (uint16_t)right)) {

@@ -24,7 +24,7 @@ gcc -std=c11 -O2 -Wall -Wextra RC_filtering.c -o RC_filtering -lm
 python analyze.py audio_examples figure
 ```
 
-程式拒絕 $f\ge f_s/2$ 的產生要求，避免把超過奈奎斯特頻率的類比弦波誤當成原頻率；B5–B6 仍以數學方式分析 $f_s=4000$、 $f=3000$ 的混疊情況。WAV 使用小端序 RIFF 標頭與交錯雙聲道樣本；濾波器保留取樣率、聲道數與樣本總數，輸出標準 PCM16 WAV。
+程式允許 $f\ge f_s/2$，可直接產生混疊案例；例如 $f_s=4000$、 $f=3000$ 時，取樣後的複數弦波等價於 −1000 Hz。WAV 使用小端序 RIFF 標頭與交錯雙聲道樣本；濾波器保留取樣率、聲道數與樣本總數，輸出標準 PCM16 WAV。
 
 ## Part A：相子暖身
 
