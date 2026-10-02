@@ -77,7 +77,11 @@ $$\begin{aligned}
 
 ## Part B：RC 低通濾波器
 
-設 $T=RC$。本題 $R=1000\,\Omega$，$C=1/(2\pi\cdot400\cdot1000)=3.97887358\times10^{-7}\,\mathrm F$，所以 $T=1/(2\pi\cdot400)=3.97887358\times10^{-4}\,\mathrm s$，截止頻率 $f_c=1/(2\pi RC)=400\,\mathrm{Hz}$。由 KVL，
+設 $T=RC$。本題 $R=1000\,\Omega$，且
+
+$$C=\frac{1}{2\pi\cdot400\cdot1000}=3.97887358\times10^{-7}\,\mathrm{F}.$$
+
+所以 $T=1/(2\pi\cdot400)=3.97887358\times10^{-4}\,\mathrm{s}$，截止頻率 $f_c=1/(2\pi RC)=400\,\mathrm{Hz}$。由 KVL，
 
 $$x(t)=T\frac{dy(t)}{dt}+y(t).$$
 
@@ -107,7 +111,7 @@ $$\boxed{y(t)=H(\Omega)\left(e^{j\Omega t}-e^{-t/T}\right)u(t)}.$$
 
 令 $\Omega=2\pi f$，則 $\Omega T=f/400$。以單位振幅餘弦為例，穩態輸出是 $|H|\cos(2\pi ft+\phi)$；開啟於零時的完整複數解由 B2 的公式代入同一列 $H$ 即得。
 
-| $f$ (Hz) | $f/f_c$ | $|H|$ | $\phi$ (度) | 觀察 |
+| $f$ (Hz) | $f/f_c$ | $\lvert H\rvert$ | $\phi$ (度) | 觀察 |
 |---:|---:|---:|---:|---|
 | 100 | 0.25 | 0.970143 | −14.036 | 低頻幾乎通過 |
 | 400 | 1 | 0.707107 | −45.000 | 截止點，振幅為 $1/\sqrt2$ |
@@ -128,7 +132,7 @@ $$\boxed{H_d(e^{j\omega})=\frac{\beta}{1-\alpha e^{-j\omega}}}.$$
 由實部與虛部可得
 
 $$|H_d|=\frac{\beta}{\sqrt{(1-\alpha\cos\omega)^2+(\alpha\sin\omega)^2}},\qquad
-\angle H_d=-\operatorname{atan2}(\alpha\sin\omega,1-\alpha\cos\omega).$$
+\angle H_d=-\mathrm{atan2}(\alpha\sin\omega,1-\alpha\cos\omega).$$
 
 ### B6　不同取樣率與連續結果比較
 
