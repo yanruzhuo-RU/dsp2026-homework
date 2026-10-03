@@ -2,7 +2,7 @@
 
 題目來源：[NTPU dsp2026 HW1](https://github.com/cychiang-ntpu/dsp2026/tree/master/assignments/hw1_rc_lowpass)。本頁依序記錄 A1–A3、B1–B7 的 LaTeX 推導、C 程式、產生的 WAV 與實際量測圖。截止時間依老師題目為 **2026-10-08 18:00**。
 
-> **繳交前待補：** 老師要求 A1–A3、B1–B6 的本人手寫推導掃描。以下公式可作為親手書寫與檢查的依據；收到本人手寫照片後，放入 `figure/handwritten/` 並在這裡嵌入。A3 已附 GeoGebra 匯出圖片與互動作品連結。
+以下各題附上本人手寫掃描及 LaTeX 轉錄。也可一次查看[完整 9 頁手寫 PDF](figure/handwritten/handwritten-solutions.pdf)。A3 另附 GeoGebra 匯出圖片與互動作品連結。
 
 ## 檔案與如何重現
 
@@ -58,6 +58,8 @@ Z&=\frac{\sqrt3+3}{2}(\cos a+\cos b)
 
 故振幅為 $2\sqrt3$，相位為 0。也可用和差角展開核對： $X=(\sqrt3/2)\cos\theta+(3/2)\sin\theta$、 $Y=(3\sqrt3/2)\cos\theta-(3/2)\sin\theta$，兩個正弦項相消。
 
+![A1 本人手寫推導](figure/handwritten/A1.png)
+
 ### A2　相子
 
 統一使用餘弦作為實部。因為 $\sin(\theta+2\pi/3)=\cos(\theta+\pi/6)$，
@@ -70,6 +72,8 @@ $$\begin{aligned}
 
 因此 $Z(t)=\Re\{\widetilde Z e^{j\omega t}\}=2\sqrt3\cos(\omega t)$，與 A1 相同。
 
+![A2 本人手寫推導](figure/handwritten/A2.png)
+
 ### A3　GeoGebra
 
 在 [GeoGebra 繪圖計算機](https://www.geogebra.org/calculator) 輸入 `f(x)=sqrt(3)*cos(x-pi/3)`、`g(x)=3*sin(x+2*pi/3)`、`h(x)=f(x)+g(x)`。下圖為直接從 GeoGebra 匯出的曲線；綠色 $f$、藍色 $g$、紅色 $h$。紅色曲線在 $x=0$ 的值為 $2\sqrt3\approx3.464$，驗證 A1–A2。
@@ -77,6 +81,8 @@ $$\begin{aligned}
 [開啟 GeoGebra 互動作品](https://www.geogebra.org/m/vxzrymyc)。互動作品與下方圖片的曲線配色可能不同，三條函數相同。
 
 ![GeoGebra A3 曲線](figure/A3_geogebra.png)
+
+![A3 本人手寫記錄](figure/handwritten/A3.png)
 
 ## Part B：RC 低通濾波器
 
@@ -102,6 +108,8 @@ $$|H(\Omega)|=\frac1{\sqrt{1+(\Omega T)^2}},\qquad
 
 對實數餘弦輸入，取實部即可得到輸出 $|H|\cos(\Omega t+\angle H)$。
 
+![B1 本人手寫推導](figure/handwritten/B1.png)
+
 ### B2　開啟於 $t=0$ 的輸入
 
 對 $x(t)=e^{j\Omega t}u(t)$，假設電容在開啟前沒有電壓，亦即 $y(0^-)=0$。齊次解為 $K e^{-t/T}$；由 $y(0^+)=0$ 得 $K=-H(\Omega)$：
@@ -109,6 +117,8 @@ $$|H(\Omega)|=\frac1{\sqrt{1+(\Omega T)^2}},\qquad
 $$\boxed{y(t)=H(\Omega)\left(e^{j\Omega t}-e^{-t/T}\right)u(t)}.$$
 
 第一項是穩態，第二項是暫態。暫態以時間常數 $T\approx0.398$ ms 指數衰減。若初始電壓不是零，暫態係數也會不同。
+
+![B2 本人手寫推導](figure/handwritten/B2.png)
 
 ### B3–B4　100、400、3000 Hz 的連續時間結果
 
@@ -119,6 +129,10 @@ $$\boxed{y(t)=H(\Omega)\left(e^{j\Omega t}-e^{-t/T}\right)u(t)}.$$
 | 100 | 0.25 | 0.970143 | −14.036 | 低頻幾乎通過 |
 | 400 | 1 | 0.707107 | −45.000 | 截止點，振幅為 $1/\sqrt2$ |
 | 3000 | 7.5 | 0.132164 | −82.405 | 高頻明顯衰減 |
+
+![B3 本人手寫參數計算](figure/handwritten/B3.png)
+
+![B4 本人手寫三種頻率輸出](figure/handwritten/B4.png)
 
 ### B5　離散式與頻率響應
 
@@ -137,6 +151,8 @@ $$\boxed{H_d(e^{j\omega})=\frac{\beta}{1-\alpha e^{-j\omega}}}.$$
 $$|H_d|=\frac{\beta}{\sqrt{(1-\alpha\cos\omega)^2+(\alpha\sin\omega)^2}},\qquad
 \angle H_d=-\mathrm{atan2}(\alpha\sin\omega,1-\alpha\cos\omega).$$
 
+![B5 本人手寫離散推導](figure/handwritten/B5.png)
+
 ### B6　不同取樣率與連續結果比較
 
 下表每格是「振幅比／相位（度）」。相位使用 $(-180^\circ,180^\circ]$；數位頻率直接代入題目指定的 $f$，以呈現混疊。
@@ -149,6 +165,8 @@ $$|H_d|=\frac{\beta}{\sqrt{(1-\alpha\cos\omega)^2+(\alpha\sin\omega)^2}},\qquad
 | 16000 | 0.864245 | 0.965695 / −13.967° | 0.681250 / −42.723° | 0.130302 / −50.030° |
 
 $f_s=4000$ 時奈奎斯特頻率只有 2000 Hz，3000 Hz 取樣後等價於 **−1000 Hz** 的複數弦波；因此不能把該格當作對原始 3000 Hz 類比訊號的良好近似。即使 $f_s=8000$ 或 16000 可避免 3000 Hz 混疊，後向差分的數位濾波器在高頻仍和連續 RC 有可見差異。提高取樣率後，固定物理頻率下的結果逐漸接近連續公式。
+
+![B6 本人手寫取樣率比較](figure/handwritten/B6.png)
 
 ### B7　C 實作與 WAV 驗證
 
@@ -171,6 +189,6 @@ $f_s=4000$ 時奈奎斯特頻率只有 2000 Hz，3000 Hz 取樣後等價於 **�
 - [x] A1–A2 與 B1–B6 的 LaTeX 推導及數值結果
 - [x] A3 GeoGebra 匯出圖片
 - [x] `sine_wav_gen.c`、`RC_filtering.c`、WAV 與濾波比較圖
-- [ ] 本人手寫推導照片／掃描，放入 `figure/handwritten/` 並嵌入本頁
+- [x] 本人手寫推導掃描與 README 圖片
 - [x] GeoGebra 作品分享連結
 - [ ] 邀請老師加入私人 repository；在 LMS 填 repository URL 與完整 commit SHA
