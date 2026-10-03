@@ -1,7 +1,5 @@
 # HW1 — RC 低通濾波器數位模擬
 
-題目來源：[NTPU dsp2026 HW1](https://github.com/cychiang-ntpu/dsp2026/tree/master/assignments/hw1_rc_lowpass)。本頁依序記錄 A1–A3、B1–B7 的 LaTeX 推導、C 程式、產生的 WAV 與實際量測圖。截止時間依老師題目為 **2026-10-08 18:00**。
-
 以下各題附上本人手寫掃描及 LaTeX 轉錄。也可一次查看[完整 9 頁手寫 PDF](figure/handwritten/handwritten-solutions.pdf)。A3 另附 GeoGebra 匯出圖片與互動作品連結。
 
 ## 檔案與如何重現
