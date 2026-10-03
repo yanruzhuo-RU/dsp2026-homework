@@ -132,11 +132,11 @@ $$\boxed{y(t)=H(\Omega)\left(e^{j\Omega t}-e^{-t/T}\right)u(t)}.$$
 
 若輸入為 $x_f(t)=\cos(2\pi ft)u(t)$ 且電容初始電壓為零，將 B2 的複數解取實部，可得 $t\ge0$ 時的完整輸出（含暫態）：
 
-$\begin{aligned}
+$$\begin{aligned}
 y_{100}(t)&=0.970143\cos(200\pi t-14.036^\circ)-0.941176e^{-t/T},\\
 y_{400}(t)&=0.707107\cos(800\pi t-45^\circ)-0.500000e^{-t/T},\\
 y_{3000}(t)&=0.132164\cos(6000\pi t-82.405^\circ)-0.017467e^{-t/T}.
-\end{aligned}$
+\end{aligned}$$
 
 其中暫態係數分別是 $\operatorname{Re}H=1/[1+(f/400)^2]$；$t<0$ 時輸出為零。
 
