@@ -201,4 +201,3 @@ $f_s=4000$ 時奈奎斯特頻率只有 2000 Hz，3000 Hz 取樣後等價於 **�
 - [x] `sine_wav_gen.c`、`RC_filtering.c`、WAV 與濾波比較圖
 - [x] 本人手寫推導掃描與 README 圖片
 - [x] GeoGebra 作品分享連結
-- [ ] 邀請老師加入私人 repository；在 LMS 填 repository URL 與完整 commit SHA
