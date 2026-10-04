@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 import wave
 
-FS = 8000
+SAMPLING_RATES = (4000, 8000, 16000)
 FREQUENCIES = (100, 400, 3000)
 
 
@@ -40,13 +40,13 @@ def path_for(values: list[complex], x0: float, x1: float, y0: float,
                     for i, value in enumerate(values))
 
 
-def comparison_svg(audio: Path, figure: Path) -> list[tuple[int, float, float]]:
+def comparison_svg(audio: Path, figure: Path, fs: int) -> list[tuple[int, float, float]]:
     parts = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="810" viewBox="0 0 1100 810">',
         '<rect width="1100" height="810" fill="#f8fafc"/>',
         '<style>text{font-family:Arial,sans-serif;fill:#16243a}.title{font-size:28px;font-weight:bold}.label{font-size:18px}.small{font-size:15px}</style>',
         '<text x="60" y="48" class="title">RC low-pass: input and filtered cosine channel</text>',
-        '<text x="60" y="79" class="small">fs = 8000 Hz, fc = 400 Hz; samples after 0.1 s (startup removed)</text>',
+        f'<text x="60" y="79" class="small">fs = {fs} Hz, fc = 400 Hz; samples after 0.1 s (startup removed)</text>',
         '<line x1="730" y1="72" x2="775" y2="72" stroke="#2563eb" stroke-width="3"/>',
         '<text x="785" y="77" class="small">input</text>',
         '<line x1="880" y1="72" x2="925" y2="72" stroke="#e5533d" stroke-width="3"/>',
@@ -54,26 +54,29 @@ def comparison_svg(audio: Path, figure: Path) -> list[tuple[int, float, float]]:
     ]
     measurements = []
     for row, f in enumerate(FREQUENCIES):
-        _, original = read_complex(audio / f"sincos_fs8000_f{f}.wav")
-        _, filtered = read_complex(audio / f"filtered_fs8000_f{f}.wav")
-        gain = coefficient(filtered, FS, f) / coefficient(original, FS, f)
+        input_fs, original = read_complex(audio / f"sincos_fs{fs}_f{f}.wav")
+        output_fs, filtered = read_complex(audio / f"filtered_fs{fs}_f{f}.wav")
+        if input_fs != fs or output_fs != fs or len(original) != len(filtered):
+            raise ValueError(f"WAV format mismatch at fs={fs}, f={f}")
+        gain = coefficient(filtered, fs, f) / coefficient(original, fs, f)
         measurements.append((f, abs(gain), math.degrees(cmath.phase(gain))))
         base = 225 + row * 225
-        count = max(16, round(FS * 3 / f))  # three cycles
-        start = FS // 10
+        count = max(16, round(fs * 3 / f))  # at least 16 samples for high frequencies
+        start = fs // 10
         o, y = original[start:start + count], filtered[start:start + count]
         parts += [
             f'<rect x="55" y="{base-116}" width="990" height="190" rx="10" fill="white" stroke="#d5deeb"/>',
             f'<line x1="86" y1="{base}" x2="1005" y2="{base}" stroke="#9ca3af"/>',
             f'<path d="{path_for(o, 86, 1005, base, 85)}" fill="none" stroke="#2563eb" stroke-width="2"/>',
             f'<path d="{path_for(y, 86, 1005, base, 85)}" fill="none" stroke="#e5533d" stroke-width="2"/>',
-            f'<text x="86" y="{base-88}" class="label">{f} Hz</text>',
+            f'<text x="86" y="{base-88}" class="label">{f} Hz{" (alias: -1000 Hz)" if fs == 4000 and f == 3000 else ""}</text>',
             f'<text x="750" y="{base-88}" class="small">gain {abs(gain):.4f}; phase {math.degrees(cmath.phase(gain)):.2f}°</text>',
             f'<text x="86" y="{base+103}" class="small">0</text>',
-            f'<text x="925" y="{base+103}" class="small">{1000*(count-1)/FS:.2f} ms</text>',
+            f'<text x="925" y="{base+103}" class="small">{1000*(count-1)/fs:.2f} ms</text>',
         ]
     parts.append('</svg>')
-    (figure / "filter_comparison.svg").write_text("\n".join(parts), encoding="utf-8")
+    name = "filter_comparison.svg" if fs == 8000 else f"filter_comparison_fs{fs}.svg"
+    (figure / name).write_text("\n".join(parts), encoding="utf-8")
     return measurements
 
 
@@ -110,8 +113,9 @@ def main() -> None:
     audio = Path(sys.argv[1]); figure = Path(sys.argv[2])
     figure.mkdir(parents=True, exist_ok=True)
     phasor_svg(figure)
-    for f, gain, phase in comparison_svg(audio, figure):
-        print(f"{f:4d} Hz: measured gain {gain:.6f}, phase {phase:.3f} deg")
+    for fs in SAMPLING_RATES:
+        for f, gain, phase in comparison_svg(audio, figure, fs):
+            print(f"fs={fs:5d} Hz, f={f:4d} Hz: measured gain {gain:.6f}, phase {phase:.3f} deg")
 
 
 if __name__ == "__main__":
